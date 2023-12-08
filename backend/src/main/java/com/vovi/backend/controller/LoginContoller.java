@@ -1,16 +1,16 @@
 package com.vovi.backend.controller;
 
+import com.vovi.backend.dto.UserDTO;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api")
-@CrossOrigin("http://localhost:8081")
+@RequestMapping("/api/login")
 public class LoginContoller {
-
-    @RequestMapping(method = RequestMethod.POST, path="/login")
-    public ResponseEntity<String> handleLoginRequest(@RequestParam String login, @RequestParam String password) {
-        return ResponseEntity.ok("Authentication successful: " + login + " " + password);
+    @PostMapping(produces = MediaType.TEXT_PLAIN_VALUE)
+    public ResponseEntity<String> handleLoginRequest(@RequestBody UserDTO req) {
+        return ResponseEntity.ok("Authentication successful: " + req.getLogin() + " " + req.getPassword());
     }
 }
