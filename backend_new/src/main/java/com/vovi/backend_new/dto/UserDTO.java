@@ -1,4 +1,4 @@
-package com.vovi.backend.dto;
+package com.vovi.backend_new.dto;
 
 import lombok.Data;
 

@@ -1,4 +1,4 @@
-package com.vovi.backend.entity;
+package com.vovi.backend_new.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -9,8 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "users")
-public class User {
+public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
