@@ -9,15 +9,25 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Entity
-public class UserEntity {
+public class DotEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(unique = true, nullable = false)
-    private String login;
+    @Column(nullable = false)
+    private int x;
 
     @Column(nullable = false)
-    private String password;
+    private long y;
+
+    @Column(nullable = false)
+    private int r;
+
+    @Column(nullable = false)
+    private boolean inside;
+
+    public Boolean getInside() {
+        return this.inside;
+    }
 }

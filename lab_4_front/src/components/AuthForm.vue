@@ -27,12 +27,14 @@
 
 <script>
   import axios from 'axios'
+  import router from "@/router/router";
   export default {
     data() {
       return {
         usr: {
           login: '',
-          password: ''
+          password: '',
+          authorized: false
         }
       }
     },
@@ -40,12 +42,13 @@
       try_auth() {
         if (this.check()) {
           axios.post('/api/login', {
-            params: {
-              login: this.usr.login,
-              password: this.usr.password
-            }
+            login: this.usr.login,
+            password: this.usr.password
           }).then(res => {
-            console.log(res);
+            if (res.data==="ok") {
+              router.push("/main");
+            }
+            console.log(res.data);
           }).catch(
             err => {
               console.log(err);
@@ -55,9 +58,20 @@
       },
       try_register() {
         if (this.check()) {
-          //TODO registration
-          this.usr.login='';
-          this.usr.password='';
+          axios.post('/api/register', {
+            login: this.usr.login,
+            password: this.usr.password
+          }).then(res => {
+            if (res.data==="ok") {
+              alert("Registration successful, now u can log in!");
+            } else {
+              alert("Registration failed, username " + this.usr.login + " is already taken");
+            }
+          }).catch(
+            err => {
+              console.log(err);
+            }
+          );
         }
       },
       check() {

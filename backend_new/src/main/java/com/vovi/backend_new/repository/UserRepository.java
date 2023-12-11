@@ -7,4 +7,3 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     Boolean existsByLogin(String login);
     Boolean existsByLoginAndPassword(String login, String password);
 }
-

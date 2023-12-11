@@ -49,6 +49,8 @@
 </template>
 
 <script>
+  import axios from "axios";
+
   export default {
     data() {
       return {
@@ -62,10 +64,21 @@
     methods: {
       send() {
         if (this.check()) {
-          this.$emit('create', this.dot);
-          this.dot.val_x = '';
-          this.dot.val_y = '';
-          this.dot.val_r = ''
+          axios.post('/dots/get_res', {
+            x: this.dot.val_x,
+            y: this.dot.val_y,
+            z: this.dot.val_r
+          }).then(res => {
+            if (res.data==="ok") {
+              //TODO рисуем точку
+              //TODO эмитим фетч в таблице
+              this.$emit('create', this.dot);
+              this.dot.val_x = '';
+              this.dot.val_y = '';
+              this.dot.val_r = '';
+            }
+
+          });
         }
       },
       check() {
@@ -80,10 +93,10 @@
 </script>
 
 <style scoped>
-.input {
-  margin-bottom: 10px;
-  padding: 8px;
-  width: 20%;
-  font-family: "DejaVu Sans Mono", sans-serif;
-}
+  .input {
+    //margin-bottom: 10px;
+    padding: 8px;
+    width: 50%;
+    font-family: "DejaVu Sans Mono", sans-serif;
+  }
 </style>

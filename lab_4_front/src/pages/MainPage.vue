@@ -1,20 +1,28 @@
 <template>
   <app-header/>
-  <input-fields/>
-  <vovi-plot
-    :dots="dots"
-    @create="createDot"
-  />
-  <h1>LOL kek u succeed</h1>
+  <div class="container">
+    <div class="content">
+      <input-fields/>
+    </div>
+    <div class="content">
+      <vovi-plot
+        :dots="dots"
+        @create="createDot"
+      />
+    </div>
+  </div>
+  <vovi-table/>
 </template>
 
 <script>
 import AppHeader from "@/components/AppHeader.vue";
 import InputFields from "@/components/InputFields.vue";
 import VoviPlot from "@/components/VoviPlot.vue";
+import VoviTable from "@/components/VoviTable.vue";
 
 export default {
   components: {
+    VoviTable,
     VoviPlot,
     InputFields,
     AppHeader
@@ -40,5 +48,12 @@ export default {
 </script>
 
 <style scoped>
+  .container {
+    display: flex;
+  }
 
+  .content {
+    width: 50%;
+    padding: 4%;
+  }
 </style>

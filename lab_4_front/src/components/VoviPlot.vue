@@ -110,11 +110,12 @@ export default {
 
 <style scoped>
   .svg-wrapper{
+    margin-top: 7%;
     background-color: white;
-    border: 2px solid aqua;
-    box-shadow: 0 0 5px 0 aqua;
+    border: 2px solid #ff5258;
+    box-shadow: 0 0 5px 0 #ff5258;
     padding: 15px;
     margin-bottom: 10px;
-    width: 50%
+    width: 40%
   }
 </style>
