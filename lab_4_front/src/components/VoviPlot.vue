@@ -45,38 +45,41 @@
                  fill-opacity="0.2"
                  stroke="blue"
                  points="150,150 250,150 150,200"></polygon>
-
         <!-- Точки на графике -->
-
       </svg>
     </div>
   </div>
 </template>
 
 <script>
+import {mapGetters} from "vuex";
+
 export default {
-  data() {
-    return {
-      dot: {
-        xPlot: '',
-        yPlot: ''
-      },
-      dots: []
+  computed: {
+    ...mapGetters('dotModule', [
+      'getDots',
+      'getDot'
+    ]),
+    dots() {
+      return this.getDots;
+    },
+    dot() {
+      return this.getDot;
     }
   },
   methods: {
-    loadDots(){
-      this.$axios.get("http://localhost:8890/api/point", {
-        headers: {Authorization: "Bearer " + localStorage.getItem("jwt")}
-      }).then(response => {
-        this.dots = response.data;
-        this.drawDots();
-      }).catch(() => {
-        this.AxiosErrorHandler("Точки не удалось загрузить");
-      });
-    },
+    // loadDots(){
+    //   this.$axios.get("http://localhost:8890/api/point", {
+    //     headers: {Authorization: "Bearer " + localStorage.getItem("jwt")}
+    //   }).then(response => {
+    //     this.dots = response.data;
+    //     this.drawDots();
+    //   }).catch(() => {
+    //     this.AxiosErrorHandler("Точки не удалось загрузить");
+    //   });
+    // },
     drawDots(){
-      let r = parseFloat(this.r);
+      let r = this.$store.getters.dot().current_r;
       let svg = document.getElementById("graph")
       let oldDots = document.querySelectorAll("circle");
       oldDots.forEach(oldDot => oldDot.parentNode.removeChild(oldDot));

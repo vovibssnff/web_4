@@ -11,7 +11,7 @@ public class DotDTO {
     @Min(-2)
     @Max(2)
     @NotNull
-    private Integer x;
+    private Double x;
 
     @Min(-5)
     @Max(5)
@@ -21,5 +21,5 @@ public class DotDTO {
     @Min(-2)
     @Max(2)
     @NotNull
-    private Integer r;
+    private Double r;
 }

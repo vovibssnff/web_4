@@ -5,13 +5,12 @@
       <input-fields/>
     </div>
     <div class="content">
-      <vovi-plot
-        :dots="dots"
-        @create="createDot"
-      />
+      <vovi-plot/>
     </div>
   </div>
-  <vovi-table/>
+  <div class="table">
+    <vovi-table/>
+  </div>
 </template>
 
 <script>
@@ -26,23 +25,6 @@ export default {
     VoviPlot,
     InputFields,
     AppHeader
-  },
-  data() {
-    return {
-      // dot: {
-      //   val_x: '',
-      //   val_y: '',
-      //   val_r: '',
-      //   xPlot: '',
-      //   yPlot: '',
-      // },
-      dots: []
-    }
-  },
-  methods: {
-    createDot(dot) {
-      console.log(dot);
-    }
   }
 }
 </script>
@@ -51,7 +33,6 @@ export default {
   .container {
     display: flex;
   }
-
   .content {
     width: 50%;
     padding: 4%;

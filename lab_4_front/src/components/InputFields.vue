@@ -1,9 +1,9 @@
 <template>
   <form @submit.prevent>
-    <div>X: {{ dot.val_x }}</div>
+    <div>X: {{currentX}}</div>
     <select
-      v-model.trim="dot.val_x"
       class="input"
+      v-model="currentX"
     >
       <option disabled value="">Please select one</option>
       <option>-2</option>
@@ -17,17 +17,17 @@
       <option>2</option>
     </select>
 
-    <p>Y: {{ dot.val_y }}</p>
+    <p>Y: {{currentY}}</p>
     <input
-      v-model="dot.val_y"
       class="input"
+      v-model="currentY"
       placeholder="(-5;5)"
     />
 
-    <div>R: {{ dot.val_r }}</div>
+    <div>R: {{currentR}}</div>
     <select
-      v-model="dot.val_r"
       class="input"
+      v-model="currentR"
     >
       <option disabled value="">Please select one</option>
       <option>-2</option>
@@ -49,48 +49,72 @@
 </template>
 
 <script>
-  import axios from "axios";
+import axios from "axios";
+import {mapGetters, mapMutations} from "vuex";
 
-  export default {
-    data() {
-      return {
-        dot: {
-          val_x: '',
-          val_y: '',
-          val_r: ''
-        }
+export default {
+  computed: {
+    ...mapGetters('dotModule', ['getCurrentX', 'getCurrentY', 'getCurrentR']),
+    currentX: {
+      get() {
+        return this.getCurrentX;
+      },
+      set(val) {
+        this.$store.commit('dotModule/setCurrentX', val);
       }
     },
-    methods: {
-      send() {
-        if (this.check()) {
-          axios.post('/dots/get_res', {
-            x: this.dot.val_x,
-            y: this.dot.val_y,
-            z: this.dot.val_r
-          }).then(res => {
-            if (res.data==="ok") {
-              //TODO рисуем точку
-              //TODO эмитим фетч в таблице
-              this.$emit('create', this.dot);
-              this.dot.val_x = '';
-              this.dot.val_y = '';
-              this.dot.val_r = '';
-            }
-
-          });
-        }
+    currentY: {
+      get() {
+        return this.getCurrentY;
       },
-      check() {
-        if (!this.dot.val_x || !this.dot.val_y || !this.dot.val_r) {
-          alert("Please, set all fields");
-          return false;
-        }
-        return true;
+      set(val) {
+        this.$store.commit('dotModule/setCurrentY', val);
+      }
+    },
+    currentR: {
+      get() {
+        return this.getCurrentR;
+      },
+      set(val) {
+        this.$store.commit('dotModule/setCurrentR', val);
       }
     }
+  },
+  methods: {
+    ...mapMutations('dotModule', ['setCurrentX', 'setCurrentY', 'setCurrentR']),
+    send() {
+      if (this.check()) {
+        axios.post('/dots/check', {
+          x: this.getCurrentX.replace(',', '.'),
+          y: this.getCurrentY.replace(',', '.'),
+          r: this.getCurrentR.replace(',', '.')
+        }).then(res => {
+          console.log(res.data);
+          if (res.data === "true" || res.data === "false") {
+            // TODO: рисуем точку
+            // TODO: эмитим фетч в таблице
+            // this.$emit('create', {
+            //   x: this.current_x,
+            //   y: this.current_y,
+            //   z: this.current_r
+            // });
+          }
+        }).catch(err => {
+          console.log(err);
+        });
+      }
+    },
+    check() {
+      if (!this.getCurrentX || !this.getCurrentY || !this.getCurrentR) {
+        alert("Please, set all fields");
+        return false;
+      }
+      return true;
+    }
   }
+}
 </script>
+
 
 <style scoped>
   .input {

@@ -16,13 +16,13 @@ public class DotEntity {
     private long id;
 
     @Column(nullable = false)
-    private int x;
+    private double x;
 
     @Column(nullable = false)
     private long y;
 
     @Column(nullable = false)
-    private int r;
+    private double r;
 
     @Column(nullable = false)
     private boolean inside;

@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/dots")
 public class DotsController {
@@ -21,12 +23,17 @@ public class DotsController {
 
     public DotService dotService = new DotService();
 
-    @RequestMapping(produces = MediaType.TEXT_PLAIN_VALUE, value = "/get_res")
+    @RequestMapping(produces = MediaType.TEXT_PLAIN_VALUE, value = "/check")
     public ResponseEntity<String> dotHandler(@Valid @RequestBody DotDTO req) {
-        DotEntity dot = DotEntity.builder().x(req.getX()).y(req.getY()).r(req.getR()).build();
-        dot.setInside(dotService.check(dot));
+        DotEntity dot = DotEntity.builder().x(req.getX()).y(req.getY()).r(req.getR()).inside(dotService.check(req)).build();
         dotsRepository.save(dot);
         return ResponseEntity.ok(dot.getInside().toString());
+    }
+
+    @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/fetch")
+    public ResponseEntity<List<DotEntity>> fetchHandler() {
+        List<DotEntity> dots = dotsRepository.findAll();
+        return ResponseEntity.ok(dots);
     }
 
 }
