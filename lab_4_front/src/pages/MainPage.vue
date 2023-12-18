@@ -3,13 +3,14 @@
   <div class="container">
     <div class="content">
       <input-fields/>
+<!--        @fetch-dots-signal="fetchDotsHandler"-->
     </div>
     <div class="content">
-      <vovi-plot/>
+      <vovi-plot ref="plot"/>
     </div>
   </div>
   <div class="table">
-    <vovi-table/>
+    <vovi-table ref="table"/>
   </div>
 </template>
 
@@ -25,7 +26,7 @@ export default {
     VoviPlot,
     InputFields,
     AppHeader
-  }
+  },
 }
 </script>
 

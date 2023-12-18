@@ -11,6 +11,7 @@ const state = {
         current_r: '',
     }
 }
+
 const getters = {
     getDots: (state) => state.dots,
     getDot: (state) => state.dot,

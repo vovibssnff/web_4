@@ -50,11 +50,11 @@
 
 <script>
 import axios from "axios";
-import {mapGetters, mapMutations} from "vuex";
+import {mapActions, mapGetters, mapMutations} from "vuex";
 
 export default {
   computed: {
-    ...mapGetters('dotModule', ['getCurrentX', 'getCurrentY', 'getCurrentR']),
+    ...mapGetters('dotModule', ['getCurrentX', 'getCurrentY', 'getCurrentR', 'getDots']),
     currentX: {
       get() {
         return this.getCurrentX;
@@ -78,10 +78,19 @@ export default {
       set(val) {
         this.$store.commit('dotModule/setCurrentR', val);
       }
+    },
+    dots: {
+      get() {
+        return this.getDots;
+      },
+      set(val) {
+        this.$store.commit('dotModule/setDots', val);
+      }
     }
   },
   methods: {
-    ...mapMutations('dotModule', ['setCurrentX', 'setCurrentY', 'setCurrentR']),
+    ...mapActions('dotModule', ['fetchDots']),
+    ...mapMutations('dotModule', ['setCurrentX', 'setCurrentY', 'setCurrentR', 'setDots']),
     send() {
       if (this.check()) {
         axios.post('/dots/check', {
@@ -89,19 +98,11 @@ export default {
           y: this.getCurrentY.replace(',', '.'),
           r: this.getCurrentR.replace(',', '.')
         }).then(res => {
-          console.log(res.data);
-          if (res.data === "true" || res.data === "false") {
-            // TODO: рисуем точку
-            // TODO: эмитим фетч в таблице
-            // this.$emit('create', {
-            //   x: this.current_x,
-            //   y: this.current_y,
-            //   z: this.current_r
-            // });
+            console.log(res);
+            this.fetchDots();
           }
-        }).catch(err => {
-          console.log(err);
-        });
+        );
+        // this.$emit('fetchDotsSignal');
       }
     },
     check() {
@@ -118,7 +119,6 @@ export default {
 
 <style scoped>
   .input {
-    //margin-bottom: 10px;
     padding: 8px;
     width: 50%;
     font-family: "DejaVu Sans Mono", sans-serif;

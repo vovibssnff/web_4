@@ -45,7 +45,17 @@
                  fill-opacity="0.2"
                  stroke="blue"
                  points="150,150 250,150 150,200"></polygon>
+
         <!-- Точки на графике -->
+        <circle
+            v-for="dot in dots"
+            :key="dot.id"
+            :r="dot.inside === true ? 4.5 : 3.5"
+            :cx="computeCX(dot)"
+            :cy="computeCY(dot)"
+            :fill="computeFill(dot)"
+            :opacity="computeOpacity(dot)"
+        />
       </svg>
     </div>
   </div>
@@ -56,69 +66,74 @@ import {mapGetters} from "vuex";
 
 export default {
   computed: {
-    ...mapGetters('dotModule', [
-      'getDots',
-      'getDot'
-    ]),
-    dots() {
-      return this.getDots;
+    ...mapGetters('dotModule', ['getDots', 'getDot']),
+    dots: {
+      get() {
+        return this.getDots;
+      }
     },
-    dot() {
-      return this.getDot;
+    dot: {
+      get() {
+        return this.getDot;
+      }
     }
   },
   methods: {
-    // loadDots(){
-    //   this.$axios.get("http://localhost:8890/api/point", {
-    //     headers: {Authorization: "Bearer " + localStorage.getItem("jwt")}
-    //   }).then(response => {
-    //     this.dots = response.data;
-    //     this.drawDots();
-    //   }).catch(() => {
-    //     this.AxiosErrorHandler("Точки не удалось загрузить");
-    //   });
-    // },
-    drawDots(){
-      let r = this.$store.getters.dot().current_r;
-      let svg = document.getElementById("graph")
-      let oldDots = document.querySelectorAll("circle");
-      oldDots.forEach(oldDot => oldDot.parentNode.removeChild(oldDot));
-
-      if(this.dots.length !== 0){
-        this.dots.forEach(dot => {
-          let newDot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-          newDot.setAttribute("id", "target-dot");
-          newDot.setAttribute("r", "3.5");
-          if (r >= 0) {
-            newDot.setAttribute("cx", `${dot.x / 5 * 100 + 150}`);
-            newDot.setAttribute("cy", `${150 - dot.y / 5 * 100}`);
-          } else {
-            newDot.setAttribute("cx", `${(-1.8 * dot.x) / 5 * 100 + 150}`);
-            newDot.setAttribute("cy", `${150 - (-1.8 * dot.y) / 5 * 100}`);
-          }
-          if (dot.r == r) {
-            newDot.setAttribute("fill", dot.result === true ? "green" : "red");
-            newDot.setAttribute("r", "4.5");
-          } else {
-            newDot.setAttribute("fill", "black");
-            newDot.setAttribute("opacity", `${((r - 0.5 < dot.r) && (r + 0.5 > dot.r)) ? "0.5" : "0.1"}`);
-          }
-          svg.appendChild(newDot);
-        })
-      }
+    computeCX(dot) {
+      const factor = this.dot.r >= 0 ? 1 : -1.8;
+      return (factor * dot.x) / 5 * 100 + 150;
     },
+    computeCY(dot) {
+      const factor = this.dot.r >= 0 ? 1 : -1.8;
+      return 150 - (factor * dot.y) / 5 * 100;
+    },
+    computeFill(dot) {
+      return dot.r === this.dot.r ? (dot.result === true ? 'green' : 'red') : 'black';
+    },
+    computeOpacity(dot) {
+      return (this.dot.r - 0.5 < dot.r) && (this.dot.r + 0.5 > dot.r) ? 0.5 : 0.1;
+    },
+    // drawDots() {
+    //   let r = this.$store.getters.dot().current_r;
+    //   let svg = document.getElementById("graph")
+    //   let oldDots = document.querySelectorAll("circle");
+    //   oldDots.forEach(oldDot => oldDot.parentNode.removeChild(oldDot));
+    //
+    //   if(this.dots.length !== 0){
+    //     this.dots.forEach(dot => {
+    //       let newDot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    //       newDot.setAttribute("id", "target-dot");
+    //       newDot.setAttribute("r", "3.5");
+    //       if (r >= 0) {
+    //         newDot.setAttribute("cx", `${dot.x / 5 * 100 + 150}`);
+    //         newDot.setAttribute("cy", `${150 - dot.y / 5 * 100}`);
+    //       } else {
+    //         newDot.setAttribute("cx", `${(-1.8 * dot.x) / 5 * 100 + 150}`);
+    //         newDot.setAttribute("cy", `${150 - (-1.8 * dot.y) / 5 * 100}`);
+    //       }
+    //       if (dot.r == r) {
+    //         newDot.setAttribute("fill", dot.result === true ? "green" : "red");
+    //         newDot.setAttribute("r", "4.5");
+    //       } else {
+    //         newDot.setAttribute("fill", "black");
+    //         newDot.setAttribute("opacity", `${((r - 0.5 < dot.r) && (r + 0.5 > dot.r)) ? "0.5" : "0.1"}`);
+    //       }
+    //       svg.appendChild(newDot);
+    //     })
+    //   }
+    // },
   }
 }
 </script>
 
 <style scoped>
+
   .svg-wrapper{
-    margin-top: 7%;
     background-color: white;
     border: 2px solid #ff5258;
     box-shadow: 0 0 5px 0 #ff5258;
+    border-radius: 20%;
     padding: 15px;
     margin-bottom: 10px;
-    width: 40%
   }
 </style>
