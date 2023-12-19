@@ -27,6 +27,7 @@
 
 <script>
   import axios from 'axios'
+  import {mapMutations} from "vuex";
   import router from "@/router/router";
   export default {
     data() {
@@ -34,11 +35,14 @@
         usr: {
           login: '',
           password: '',
-          authorized: false
         }
       }
     },
     methods: {
+      ...mapMutations('dotModule', ['setAuthorized']),
+      auth(val) {
+        this.setAuthorized(val);
+      },
       try_auth() {
         if (this.check()) {
           axios.post('/api/login', {
@@ -46,6 +50,7 @@
             password: this.usr.password
           }).then(res => {
             if (res.data==="ok") {
+              this.auth(true);
               router.push("/main");
             }
             console.log(res.data);

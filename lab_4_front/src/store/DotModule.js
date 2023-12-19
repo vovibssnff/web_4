@@ -1,4 +1,3 @@
-
 import axios from "axios";
 
 const state = {
@@ -13,6 +12,7 @@ const state = {
 }
 
 const getters = {
+    getAuthorized: (state) => state.isAuthorized,
     getDots: (state) => state.dots,
     getDot: (state) => state.dot,
     getCurrentX: (state) => state.dot.current_x,
@@ -36,12 +36,12 @@ const mutations = {
     setCurrentR(state, r) {
         state.dot.current_r = r
     },
-
 }
+
 const actions = {
-    fetchDots({state}) {
+    fetchDots({ state }) {
         axios.get('/dots/fetch')
-            .then(res=> {
+            .then(res => {
                 state.dots = res.data;
             })
             .catch(error => {
@@ -55,5 +55,5 @@ export default {
     state,
     getters,
     actions,
-    mutations
-}
+    mutations,
+};

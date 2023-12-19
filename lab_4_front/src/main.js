@@ -6,6 +6,6 @@ import store from "@/store";
 const app = createApp(App)
 
 app
-    .use(router)
     .use(store)
+    .use(router)
     .mount('#app')
