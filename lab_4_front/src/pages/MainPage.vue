@@ -1,16 +1,17 @@
 <template>
-  <app-header/>
-  <div class="container">
-    <div class="content">
-      <input-fields/>
-<!--        @fetch-dots-signal="fetchDotsHandler"-->
+  <div>
+    <app-header />
+    <div class="container">
+      <div class="content">
+        <input-fields />
+      </div>
+      <div class="content">
+        <vovi-plot ref="plot" />
+      </div>
     </div>
-    <div class="content">
-      <vovi-plot ref="plot"/>
+    <div class="table">
+      <vovi-table ref="table" />
     </div>
-  </div>
-  <div class="table">
-    <vovi-table ref="table"/>
   </div>
 </template>
 
@@ -26,16 +27,42 @@ export default {
     VoviPlot,
     InputFields,
     AppHeader
-  },
-}
+  }
+};
 </script>
 
 <style scoped>
-  .container {
-    display: flex;
-  }
+.container {
+  display: flex;
+}
+
+.content {
+  width: 50%;
+  padding: 4%;
+}
+
+/* For screens 1259 pixels and above (desktop) */
+@media only screen and (min-width: 1259px) {
   .content {
-    width: 50%;
-    padding: 4%;
+    width: 30%;
   }
+}
+
+/* For screens between 694 and 1259 pixels (tablet) */
+@media only screen and (min-width: 694px) and (max-width: 1258px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .content {
+    width: 100%;
+  }
+}
+
+/* For screens below 694 pixels (mobile) */
+@media only screen and (max-width: 693px) {
+  .content {
+    width: 100%;
+  }
+}
 </style>

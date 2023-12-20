@@ -7,13 +7,13 @@
     >
       <option disabled value="">Please select one</option>
       <option>-2</option>
-      <option>-1,5</option>
+      <option>-1.5</option>
       <option>-1</option>
-      <option>-0,5</option>
+      <option>-0.5</option>
       <option>-0</option>
-      <option>0,5</option>
+      <option>0.5</option>
       <option>1</option>
-      <option>1,5</option>
+      <option>1.5</option>
       <option>2</option>
     </select>
 
@@ -31,26 +31,33 @@
     >
       <option disabled value="">Please select one</option>
       <option>-2</option>
-      <option>-1,5</option>
+      <option>-1.5</option>
       <option>-1</option>
-      <option>-0,5</option>
+      <option>-0.5</option>
       <option>-0</option>
-      <option>0,5</option>
+      <option>0.5</option>
       <option>1</option>
-      <option>1,5</option>
+      <option>1.5</option>
       <option>2</option>
     </select>
 
-    <button
-        class="btn"
-        @click="send"
-    >send</button>
+    <div class="btn_container">
+      <button
+          class="btn"
+          @click="send"
+      >send</button>
+      <button
+          class="btn"
+          @click="logout"
+      >logout</button>
+    </div>
   </form>
 </template>
 
 <script>
 import axios from "axios";
 import {mapActions, mapGetters, mapMutations} from "vuex";
+import router from "@/router/router";
 
 export default {
   computed: {
@@ -90,7 +97,10 @@ export default {
   },
   methods: {
     ...mapActions('dotModule', ['fetchDots']),
-    ...mapMutations('dotModule', ['setCurrentX', 'setCurrentY', 'setCurrentR', 'setDots']),
+    ...mapMutations('dotModule', ['setCurrentX', 'setCurrentY', 'setCurrentR', 'setDots', 'setAuthorized']),
+    auth(val) {
+      this.setAuthorized(val);
+    },
     send() {
       if (this.check()) {
         axios.post('/dots/check', {
@@ -111,6 +121,10 @@ export default {
         return false;
       }
       return true;
+    },
+    logout() {
+      this.auth(false);
+      router.push("login");
     }
   }
 }
@@ -122,5 +136,22 @@ export default {
     padding: 8px;
     width: 50%;
     font-family: "DejaVu Sans Mono", sans-serif;
+  }
+  .btn_container {
+    display: flex;
+    width: 20%;
+    justify-content: center;
+  }
+
+  .btn {
+    width: 40%;
+    background-color: #ff2f2f;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: "DejaVu Sans Mono", sans-serif;
+    margin: 0 10px;
   }
 </style>

@@ -19,7 +19,7 @@ public class DotEntity {
     private double x;
 
     @Column(nullable = false)
-    private long y;
+    private float y;
 
     @Column(nullable = false)
     private double r;

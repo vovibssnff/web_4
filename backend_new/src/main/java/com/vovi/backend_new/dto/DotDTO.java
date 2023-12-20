@@ -16,7 +16,7 @@ public class DotDTO {
     @Min(-5)
     @Max(5)
     @NotNull
-    private Long y;
+    private Float y;
 
     @Min(-2)
     @Max(2)

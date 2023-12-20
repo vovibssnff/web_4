@@ -26,25 +26,28 @@
         <text fill="black" x="160" y="15">Y</text>
 
         <!-- Первая фигура (1 четверть) -->
-        <path id="circle"
-              fill="blue"
-              fill-opacity="0.2"
-              stroke="blue"
-              d="M 200 150 A 50 50, 90, 0, 0, 150 100 L 150 150 Z"></path>
+        <path
+            id="circle"
+            fill="red"
+            fill-opacity="0.2"
+            stroke="red"
+            :d="computeCircle"
+        ></path>
+
 
         <!-- Вторая фигура (2 четверть) -->
         <polygon id="rectangle"
-                 fill="blue"
+                 fill="red"
                  fill-opacity="0.2"
-                 stroke="blue"
-                 points="100,50 100,150 150,150 150,50"></polygon>
+                 stroke="red"
+                 :points="computeRectanglePoints"></polygon>
 
         <!-- Третья фигура (4 четверть) -->
         <polygon id="triangle"
-                 fill="blue"
+                 fill="red"
                  fill-opacity="0.2"
-                 stroke="blue"
-                 points="150,150 250,150 150,200"></polygon>
+                 stroke="red"
+                 :points="computeTriangle"></polygon>
 
         <!-- Точки на графике -->
         <circle
@@ -62,11 +65,44 @@
 </template>
 
 <script>
-import {mapGetters} from "vuex";
+import {mapGetters, mapMutations} from "vuex";
 
 export default {
   computed: {
-    ...mapGetters('dotModule', ['getDots', 'getDot']),
+    ...mapGetters('dotModule', ['getDots', 'getDot', 'getCurrentR']),
+    currentX: {
+      get() {
+        return this.getCurrentX;
+      },
+      set(val) {
+        this.$store.commit('dotModule/setCurrentX', val);
+      }
+    },
+    currentY: {
+      get() {
+        return this.getCurrentY;
+      },
+      set(val) {
+        this.$store.commit('dotModule/setCurrentY', val);
+      }
+    },
+    currentR: {
+      get() {
+        return this.getCurrentR;
+      },
+      set(val) {
+        this.$store.commit('dotModule/setCurrentR', val);
+      }
+    },
+    computeCircle() {
+      return `M ${150 + 50 * this.currentR} 150 A ${this.currentR * 50} ${this.currentR * 50}, 0, 0, 0, ${150} ${150 - 50 * this.currentR} L 150 150 Z`;
+    },
+    computeRectanglePoints() {
+      return `${150 - 50 * this.currentR}, ${150 - 100 * this.currentR} ${150}, ${150 - 100 * this.currentR} ${150}, 150 ${150 - 50 * this.currentR}, 150`;
+    },
+    computeTriangle() {
+      return `150,150 ${150+50*this.currentR},150 150,${150+50*this.currentR}`;
+    },
     dots: {
       get() {
         return this.getDots;
@@ -79,49 +115,44 @@ export default {
     }
   },
   methods: {
+    ...mapMutations('dotModule', ['setCurrentX', 'setCurrentY', 'setCurrentR']),
     computeCX(dot) {
-      const factor = this.dot.r >= 0 ? 1 : -1.8;
-      return (factor * dot.x) / 5 * 100 + 150;
+      console.log("omg");
+      return dot.x/5*500+150;
     },
     computeCY(dot) {
-      const factor = this.dot.r >= 0 ? 1 : -1.8;
-      return 150 - (factor * dot.y) / 5 * 100;
+      return 150 - dot.y / 5 * 500;
     },
     computeFill(dot) {
-      return dot.r === this.dot.r ? (dot.result === true ? 'green' : 'red') : 'black';
+      return dot.r === this.currentR ? (dot.inside === true ? 'green' : 'red') : 'black';
     },
     computeOpacity(dot) {
       return (this.dot.r - 0.5 < dot.r) && (this.dot.r + 0.5 > dot.r) ? 0.5 : 0.1;
     },
-    // drawDots() {
-    //   let r = this.$store.getters.dot().current_r;
-    //   let svg = document.getElementById("graph")
-    //   let oldDots = document.querySelectorAll("circle");
-    //   oldDots.forEach(oldDot => oldDot.parentNode.removeChild(oldDot));
-    //
-    //   if(this.dots.length !== 0){
-    //     this.dots.forEach(dot => {
-    //       let newDot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-    //       newDot.setAttribute("id", "target-dot");
-    //       newDot.setAttribute("r", "3.5");
-    //       if (r >= 0) {
-    //         newDot.setAttribute("cx", `${dot.x / 5 * 100 + 150}`);
-    //         newDot.setAttribute("cy", `${150 - dot.y / 5 * 100}`);
-    //       } else {
-    //         newDot.setAttribute("cx", `${(-1.8 * dot.x) / 5 * 100 + 150}`);
-    //         newDot.setAttribute("cy", `${150 - (-1.8 * dot.y) / 5 * 100}`);
-    //       }
-    //       if (dot.r == r) {
-    //         newDot.setAttribute("fill", dot.result === true ? "green" : "red");
-    //         newDot.setAttribute("r", "4.5");
-    //       } else {
-    //         newDot.setAttribute("fill", "black");
-    //         newDot.setAttribute("opacity", `${((r - 0.5 < dot.r) && (r + 0.5 > dot.r)) ? "0.5" : "0.1"}`);
-    //       }
-    //       svg.appendChild(newDot);
-    //     })
-    //   }
-    // },
+    validateFromGraph(event) {
+      let position = getMousePosition(document.getElementById("graph"), event);  // Pass the event parameter
+      this.currentX = (Math.round((position.x - 150) / 100 * this.currentR * 2) / 2).toFixed(1);
+      this.currentY = ((150 - position.y) / 100 * this.currentR).toFixed(2);
+      if (!this.check()) {
+        alert("invalid input");
+      }
+
+      function getMousePosition(element, event) {
+        let rect = element.getBoundingClientRect();
+        return {
+          x: event.clientX - rect.left,
+          y: event.clientY - rect.top
+        };
+      }
+    },
+
+    check() {
+      if (!this.currentX || !this.currentY || !this.currentR) {
+        alert("Please, set all fields");
+        return false;
+      }
+      return true;
+    }
   }
 }
 </script>
